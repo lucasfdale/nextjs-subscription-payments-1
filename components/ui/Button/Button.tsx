@@ -6,14 +6,12 @@ import { mergeRefs } from 'react-merge-refs';
 
 import LoadingDots from '@/components/ui/LoadingDots';
 
-import styles from './Button.module.css';
-
 interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'slim' | 'flat';
   active?: boolean;
   width?: number;
   loading?: boolean;
-  Component?: React.ComponentType;
+  Component?: string | React.ComponentType<any>;
 }
 
 const Button = forwardRef<HTMLButtonElement, Props>((props, buttonRef) => {
@@ -29,21 +27,25 @@ const Button = forwardRef<HTMLButtonElement, Props>((props, buttonRef) => {
     Component = 'button',
     ...rest
   } = props;
-  const ref = useRef(null);
+  const ref = useRef<HTMLButtonElement>(null);
+
   const rootClassName = cn(
-    styles.root,
+    'bg-white text-zinc-800 cursor-pointer inline-flex px-10 rounded-sm leading-6 transition ease-in-out duration-150 shadow-sm font-semibold text-center justify-center uppercase py-4 border border-transparent items-center',
     {
-      [styles.slim]: variant === 'slim',
-      [styles.loading]: loading,
-      [styles.disabled]: disabled
+      'bg-zinc-600': active,
+      'bg-zinc-700 text-zinc-500 border-zinc-600 cursor-not-allowed': loading,
+      'py-2 transform-none normal-case': variant === 'slim',
+      'text-zinc-400 border-zinc-600 bg-zinc-700 cursor-not-allowed hover:bg-zinc-700 hover:text-zinc-400':
+        disabled
     },
     className
   );
+
   return (
     <Component
       aria-pressed={active}
       data-variant={variant}
-      ref={mergeRefs([ref, buttonRef])}
+      ref={buttonRef || ref}
       className={rootClassName}
       disabled={disabled}
       style={{
@@ -52,15 +54,17 @@ const Button = forwardRef<HTMLButtonElement, Props>((props, buttonRef) => {
       }}
       {...rest}
     >
-      {children}
-      {loading && (
-        <i className="flex pl-2 m-0">
+      {loading ? (
+        <i className="m-0 flex">
           <LoadingDots />
         </i>
+      ) : (
+        children
       )}
     </Component>
   );
 });
+
 Button.displayName = 'Button';
 
 export default Button;

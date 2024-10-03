@@ -1,13 +1,15 @@
-import { Metadata } from 'next';
-import Footer from '@/components/ui/Footer';
-import Navbar from '@/components/ui/Navbar';
-import { Toaster } from '@/components/ui/Toasts/toaster';
-import { PropsWithChildren, Suspense } from 'react';
-import { getURL } from '@/utils/helpers';
-import 'styles/main.css';
+import { Metadata } from 'next'
+import { Navbar } from '@/components/Header/Navbar'
+import { Toaster } from '@/components/ui/Toasts/toaster'
+import { PropsWithChildren, Suspense } from 'react'
+import { getURL } from '@/utils/helpers'
+import './globals.css'
+import { Manrope } from 'next/font/google'
 
-const title = 'Next.js Subscription Starter';
-const description = 'Brought to you by Vercel, Stripe, and Supabase.';
+const manrope = Manrope({ subsets: ['latin'] })
+
+const title = 'Next.js Subscription Starter'
+const description = 'Brought to you by Vercel, Stripe, and Supabase.'
 
 export const metadata: Metadata = {
   metadataBase: new URL(getURL()),
@@ -15,26 +17,20 @@ export const metadata: Metadata = {
   description: description,
   openGraph: {
     title: title,
-    description: description
-  }
-};
+    description: description,
+  },
+}
 
-export default async function RootLayout({ children }: PropsWithChildren) {
+export default function RootLayout({ children }: PropsWithChildren) {
   return (
     <html lang="en">
-      <body className="bg-black">
+      <body className={`${manrope.className} bg-background text-foreground`}>
         <Navbar />
-        <main
-          id="skip"
-          className="min-h-[calc(100dvh-4rem)] md:min-h[calc(100dvh-5rem)]"
-        >
-          {children}
-        </main>
-        <Footer />
         <Suspense>
           <Toaster />
         </Suspense>
+        {children}
       </body>
     </html>
-  );
+  )
 }
